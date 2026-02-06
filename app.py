@@ -6,8 +6,12 @@ from werkzeug.utils import secure_filename
 import datetime
 
 
+from flask_wtf.csrf import CSRFProtect
+
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
+# Enable CSRF protection
+csrf = CSRFProtect(app)
+app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-this-in-prod')
 
 
 # Define database path consistently
