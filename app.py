@@ -1,4 +1,3 @@
-from unittest import result
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import os
@@ -11,7 +10,7 @@ from flask_wtf import CSRFProtect
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(16))
 
-csrf = CSRFProtect(app)
+# csrf = CSRFProtect(app)
 
 from firebase_config import get_firebase_config
 
@@ -61,11 +60,11 @@ def allowed_file(filename):
 
 # Initialize database on startup
 def init_db():
-    if not os.path.exists(DB_PATH):
-        connection = sqlite3.connect(DB_PATH)
-        cursor = connection.cursor()
+    connection = sqlite3.connect(DB_PATH)
+    cursor = connection.cursor()
 
-        cursor.execute("""
+    # Student table
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS student (
             student_name TEXT NOT NULL,
             student_id TEXT PRIMARY KEY,
@@ -75,9 +74,10 @@ def init_db():
             student_gender TEXT,
             student_dept TEXT
         )
-        """)
+    """)
 
-        cursor.execute("""
+    # Teacher table
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS teacher (
             teacher_name TEXT NOT NULL,
             teacher_id TEXT PRIMARY KEY,
@@ -87,95 +87,43 @@ def init_db():
             teacher_gender TEXT,
             teacher_dept TEXT
         )
-        """)
+    """)
 
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS achievements (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                teacher_id TEXT NOT NULL,
-                student_id TEXT NOT NULL,
-                achievement_type TEXT NOT NULL,
-                event_name TEXT NOT NULL,
-                achievement_date DATE NOT NULL,
-                organizer TEXT NOT NULL,
-                position TEXT NOT NULL,
-                achievement_description TEXT,
-                certificate_path TEXT,
+    # Achievements table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS achievements (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            teacher_id TEXT NOT NULL,
+            student_id TEXT NOT NULL,
+            achievement_type TEXT NOT NULL,
+            event_name TEXT NOT NULL,
+            achievement_date DATE NOT NULL,
+            organizer TEXT NOT NULL,
+            position TEXT NOT NULL,
+            achievement_description TEXT,
+            certificate_path TEXT,
+            symposium_theme TEXT,
+            programming_language TEXT,
+            coding_platform TEXT,
+            paper_title TEXT,
+            journal_name TEXT,
+            conference_level TEXT,
+            conference_role TEXT,
+            team_size INTEGER,
+            project_title TEXT,
+            database_type TEXT,
+            difficulty_level TEXT,
+            other_description TEXT,
+            certificate_hash TEXT UNIQUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (student_id) REFERENCES student(student_id),
+            FOREIGN KEY (teacher_id) REFERENCES teacher(teacher_id)
+        )
+    """)
 
-                symposium_theme TEXT,
-                programming_language TEXT,
-                coding_platform TEXT,
-                paper_title TEXT,
-                journal_name TEXT,
-                conference_level TEXT,
-                conference_role TEXT,
-                team_size INTEGER,
-                project_title TEXT,
-                database_type TEXT,
-                difficulty_level TEXT,
-                other_description TEXT,
-
-                certificate_hash TEXT UNIQUE, 
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-                FOREIGN KEY (student_id) REFERENCES student(student_id),
-                FOREIGN KEY (teacher_id) REFERENCES teacher(teacher_id)
-            )
-            """)
-
-
-        connection.commit()
-        connection.close()
-        print(f"Created database at {DB_PATH}")
-    else:
-        connection = sqlite3.connect(DB_PATH)
-        cursor = connection.cursor()
-
-        # Ensure achievements table exists
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='achievements'")
-        if not cursor.fetchone():
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS achievements (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    teacher_id TEXT NOT NULL,
-                    student_id TEXT NOT NULL,
-                    achievement_type TEXT NOT NULL,
-                    event_name TEXT NOT NULL,
-                    achievement_date DATE NOT NULL,
-                    organizer TEXT NOT NULL,
-                    position TEXT NOT NULL,
-                    achievement_description TEXT,
-                    certificate_path TEXT,
-
-                    symposium_theme TEXT,
-                    programming_language TEXT,
-                    coding_platform TEXT,
-                    paper_title TEXT,
-                    journal_name TEXT,
-                    conference_level TEXT,
-                    conference_role TEXT,
-                    team_size INTEGER,
-                    project_title TEXT,
-                    database_type TEXT,
-                    difficulty_level TEXT,
-                    other_description TEXT,
-
-                    certificate_hash TEXT UNIQUE, 
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-                    FOREIGN KEY (student_id) REFERENCES student(student_id),
-                    FOREIGN KEY (teacher_id) REFERENCES teacher(teacher_id)
-                )
-                """)
-
-            connection.commit()
-            print("Created achievements table")
-
-        # ✅ IMPORTANT: fix old DBs missing columns (created_at issue)
-        ensure_achievements_schema(connection)
-
-        connection.close()
-        print(f"Database already exists at {DB_PATH}")
+    connection.commit()
+    connection.close()
+    print("Database initialized successfully")
 
 
 # Call initialization function
