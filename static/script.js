@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.setItem("theme", "dark");
     }
   });
+<<<<<<< HEAD
 });
 
 /* 👇👇 MUST BE OUTSIDE */
@@ -58,3 +59,9 @@ function applyFilter() {
       });
     });
 }
+=======
+
+
+
+});
+>>>>>>> c2e9f6021e5aa3f405794a69358b5d36c0350970

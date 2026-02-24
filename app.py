@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+=======
+from flask import Flask, render_template, request, redirect, url_for, session
+>>>>>>> c2e9f6021e5aa3f405794a69358b5d36c0350970
 import sqlite3
 import os
 import secrets
@@ -185,7 +189,11 @@ def student():
             session["student_id"] = student_data[1]
             session["student_name"] = student_data[0]
             session["student_dept"] = student_data[6]
+<<<<<<< HEAD
             return redirect(url_for("student_dashboard"))
+=======
+            return redirect(url_for("student-dashboard"))
+>>>>>>> c2e9f6021e5aa3f405794a69358b5d36c0350970
         else:
             ctx = {"error": "Invalid credentials. Please try again."}
             ctx["firebase_config"] = get_firebase_config() if get_firebase_config else DEFAULT_FIREBASE_CONFIG
@@ -437,6 +445,7 @@ def submit_achievements():
 
     return render_template("submit_achievements.html")
 
+<<<<<<< HEAD
 @app.route("/edit-achievement/<int:achievement_id>", methods=["GET", "POST"])
 def edit_achievement(achievement_id):
 
@@ -599,6 +608,34 @@ def student_dashboard():
         this_semester=this_semester,
         achievements=achievements
     )
+=======
+
+@app.route("/student-achievements", endpoint="student-achievements")
+def student_achievements():
+    if not session.get("logged_in"):
+        return redirect(url_for("student"))
+
+    student_data = {
+        "id": session.get("student_id"),
+        "name": session.get("student_name"),
+        "dept": session.get("student_dept"),
+    }
+    return render_template("student_achievements_1.html", student=student_data)
+
+
+@app.route("/student-dashboard", endpoint="student-dashboard")
+def student_dashboard():
+    if not session.get("logged_in"):
+        return redirect(url_for("student"))
+
+    student_data = {
+        "id": session.get("student_id"),
+        "name": session.get("student_name"),
+        "dept": session.get("student_dept"),
+    }
+    return render_template("student_dashboard.html", student=student_data)
+
+>>>>>>> c2e9f6021e5aa3f405794a69358b5d36c0350970
 
 @app.route("/teacher-dashboard", endpoint="teacher-dashboard")
 def teacher_dashboard():
@@ -683,6 +720,7 @@ def all_achievements():
 
     return render_template("all_achievements.html", achievements=achievements)
 
+<<<<<<< HEAD
 @app.route("/api/achievements/filter")
 def filter_achievements():
     achievement_type = request.args.get("type")
@@ -735,6 +773,8 @@ def filter_achievements():
         for r in rows
     ])
 
+=======
+>>>>>>> c2e9f6021e5aa3f405794a69358b5d36c0350970
 
 if __name__ == "__main__":
     init_db()
