@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Registration</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <script>
+        function validatePasswords(event) {
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+            const message = document.getElementById("password-message");
+
+            if (password !== confirmPassword) {
+                event.preventDefault();
+                message.textContent = "❌ Passwords do not match!";
+                message.style.color = "red";
+                return false;
+            }
+
+            message.textContent = "✅ Passwords match!";
+            message.style.color = "limegreen";
+            return true;
+        }
+    </script>
+
+    <style>
+        .input-box select {
+            width: 100%;
+            height: 45px;
+            padding-left: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            appearance: none;
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+
+        .input-box select option {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toggle-container">
+        <button id="mode-toggle">Dark Mode 🌙</button>
+    </div>
+
+    <div class="container">
+        <div class="title">Teacher Registration</div>
+
+        <div class="content">
+
+            {% if error %}
+            <div style="color:red;text-align:center;margin-bottom:10px;font-weight:bold;">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form action="/teacher-new" method="POST" onsubmit="return validatePasswords(event)">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="user-details">
+
+                    <div class="input-box">
+                        <span class="details">Full Name</span>
+                        <input type="text" name="teacher_name" required>
+                    </div>
+
+                    <div class="input-box">
+                        <span class="details">Teacher ID</span>
+                        <input type="text" name="teacher_id" required>
+                    </div>
+
+                    <div class="input-box">
+                        <span class="details">Email</span>
+                        <input type="email" name="email" required>
+                    </div>
+
+                    <div class="input-box">
+                        <span class="details">Phone Number</span>
+                        <input type="tel" name="phone_number" required>
+                    </div>
+
+                    <div class="input-box">
+                        <span class="details">Password</span>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+
+                    <div class="input-box">
+                        <span class="details">Confirm Password</span>
+                        <input type="password" id="confirm-password" required>
+                        <small id="password-message"></small>
+                    </div>
+
+                    <div class="input-box">
+                        <span class="details">Gender</span>
+                        <select name="teacher_gender" required>
+                            <option disabled selected value="">Select</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="input-box">
+                        <span class="details">Department</span>
+                        <select name="teacher_dept" required>
+                            <option disabled selected value="">Select</option>
+                            <option>CSE</option>
+                            <option>CSE(E Tech)</option>
+                            <option>ECE</option>
+                            <option>MECH</option>
+                        </select>
+                    </div>
+
+                    <div class="input-box" style="width:100%;">
+                        <span class="details">
+                            Teacher Code <small>(Required for verification)</small>
+                        </span>
+                        <input type="password" name="teacher_code" required>
+                    </div>
+
+                </div>
+
+                <div class="button">
+                    <input type="submit" value="Register">
+                </div>
+
+            </form>
+
+            <div class="back-link">
+                <a href="{{ url_for('teacher') }}">Back to Login</a>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
