@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # tests/test_auth.py
 def test_student_login_success(client, test_db):
     """Test successful student login."""
@@ -40,7 +40,7 @@ def test_teacher_login_success(client, test_db):
     }, follow_redirects=True)
 
     assert response.status_code == 200
-=======
+
 # tests/test_auth.py
 def test_student_login_success(client, test_db):
     """Test successful student login."""
@@ -82,5 +82,5 @@ def test_teacher_login_success(client, test_db):
     }, follow_redirects=True)
 
     assert response.status_code == 200
->>>>>>> c2e9f6021e5aa3f405794a69358b5d36c0350970
+
     assert b"Teacher" in response.data
